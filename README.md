@@ -12,7 +12,8 @@ A modern, full-stack restaurant ordering system with UPI payment integration, em
 | Customer Interface | Admin Dashboard | Payment QR |
 |---|---|---|
 | <img src="images/menu.png" alt="Customer Menu" width="300"> | <img src="images/admin dashboard.png" alt="Admin Dashboard" width="300"> | <img src="images/qrcode.png" alt="Payment QR Code" width="300"> |
-
+### 🚀 Live Demo
+https://love-bite-restaurant.netlify.app/
 
 ## ✨ Features
 
