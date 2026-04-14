@@ -2,10 +2,16 @@
 
 A modern, full-stack restaurant ordering system with UPI payment integration, email receipts, table management, and an admin dashboard.
 
-![Love-Bite](images/logo.png)
+<img src="images/logo.png" alt="Love-Bite" width="150" height="auto">
 
 ---
+## 🎬 Preview & Live Demo
 
+### 📱 Screenshots
+
+| Customer Interface | Admin Dashboard | Payment QR |
+|---|---|---|
+| <img src="images/menu.png" alt="Customer Menu" width="300"> | <img src="images/admin dashboard.png" alt="Admin Dashboard" width="300"> | <img src="images/qrcode.png" alt="Payment QR Code" width="300"> |
 
 
 ## ✨ Features
@@ -56,53 +62,7 @@ A modern, full-stack restaurant ordering system with UPI payment integration, em
 - **dotenv** - Environment configuration
 - **bcrypt** - Password hashing
 - **express-rate-limit** - API rate limiting
-
-
-
-
-
-## 🔌 API Endpoints
-
-### Orders
-```
-GET  /api/orders              # Get all orders
-POST /api/orders              # Create new order
-DELETE /api/orders/clear      # Clear all orders
-```
-
-### Receipts
-```
-POST /api/send-receipt        # Send order receipt email
-```
-
-### Bookings
-```
-GET  /api/bookings            # Get all bookings
-POST /api/bookings            # Create new booking
-DELETE /api/bookings/clear    # Clear all bookings
-```
-
-### Tables
-```
-GET  /api/tables              # Get table status
-POST /api/tables/allocate     # Allocate table to order
-```
-
-### Menu
-```
-GET  /api/menu                # Get menu items
-```
-
-### Admin
-```
-POST /api/admin/login         # Admin login
-```
-
-### Health Check
-```
-GET  /api/health              # Server status
-```
-
+- 
 ---
 
 ## 👨‍💼 Admin Features
