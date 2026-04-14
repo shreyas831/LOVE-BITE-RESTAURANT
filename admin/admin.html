@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - Love-Bite</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen p-6">
+  <h1 class="text-2xl font-bold mb-4">Admin Dashboard — Menu</h1>
+
+  <section class="mb-6">
+    <h2 class="font-semibold">Add Menu Item</h2>
+    <form id="addItem" class="space-y-2 max-w-md">
+      <input name="name" placeholder="Name" required class="w-full px-3 py-2 rounded border" />
+      <input name="category" placeholder="Category" required class="w-full px-3 py-2 rounded border" />
+      <input name="price" type="number" placeholder="Price" required class="w-full px-3 py-2 rounded border" />
+      <input name="image" placeholder="Image URL (optional)" class="w-full px-3 py-2 rounded border" />
+      <textarea name="description" placeholder="Description" class="w-full px-3 py-2 rounded border"></textarea>
+      <button class="btn-primary" type="submit">Add Item</button>
+    </form>
+  </section>
+
+  <section>
+    <h2 class="font-semibold">Existing Items</h2>
+    <div id="items" class="mt-4 grid grid-cols-1 gap-4"></div>
+  </section>
+
+  <script src="../js/admin.js"></script>
+</body>
+</html>

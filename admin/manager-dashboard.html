@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard - Love Bite Restaurant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #fef3c7; /* tailwind bg-yellow-100 */
+            color: #92400e; /* tailwind text-yellow-800 */
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background-color: #dcfce7; /* tailwind bg-green-100 */
+            color: #065f46; /* tailwind text-green-800 */
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-booked {
+            background-color: #dbeafe; /* tailwind bg-blue-100 */
+            color: #1e3a8a; /* tailwind text-blue-800 */
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        table tbody tr:hover {
+            background-color: #f9fafb; /* tailwind bg-gray-50 */
+        }
+
+        /* Manager profile unique styling */
+        .manager-profile .manager-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            transition: transform .18s ease, box-shadow .18s ease;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+
+        .manager-profile .manager-avatar:focus,
+        .manager-profile .manager-avatar:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .manager-profile .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 9999px;
+            display: inline-block;
+            border: 2px solid white;
+            position: absolute;
+            right: -3px;
+            bottom: -3px;
+            background: #34d399;
+        }
+
+        .manager-profile .name-role {
+            min-width: 140px;
+        }
+
+        @media (max-width: 640px) {
+            .manager-profile .name-role {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gray-100">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <h1
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-orange-600">
+                    <i class="fas fa-chart-bar mr-2"></i>Manager Dashboard
+                </h1>
+                <a href="admin-dashboard.html" class="btn-primary inline-flex items-center gap-2 ml-4"
+                    title="Back to Admin Dashboard">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3 manager-profile">
+
+
+                    <button id="refreshBtn"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                        title="Refresh data">
+                        <i class="fas fa-sync-alt mr-2"></i>Refresh
+                    </button>
+                    <button id="exportBtn"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                        title="Export data">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                    <button id="logoutBtn"
+                        class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                    <div class="text-right leading-tight">
+                        <p id="managerName" class="font-semibold text-gray-800 flex items-center justify-end gap-1">
+                            <i class="fas fa-user-shield text-blue-600"></i>
+                            Manager
+                        </p>
+                        <p id="lastUpdate" class="text-xs text-gray-500">
+                            <i class="fas fa-clock"></i>
+                            Last updated: now
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto p-6">
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Total Orders</p>
+                        <p class="text-3xl font-bold text-gray-800" id="totalOrders">0</p>
+                    </div>
+                    <i class="fas fa-shopping-bag text-4xl text-pink-600 opacity-20"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Total Revenue</p>
+                        <p class="text-3xl font-bold text-gray-800" id="totalRevenue">₹0</p>
+                    </div>
+                    <i class="fas fa-rupee-sign text-4xl text-green-600 opacity-20"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Table Bookings</p>
+                        <p class="text-3xl font-bold text-gray-800" id="totalBookings">0</p>
+                    </div>
+                    <i class="fas fa-chair text-4xl text-blue-600 opacity-20"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Today's Orders</p>
+                        <p class="text-3xl font-bold text-gray-800" id="todayOrders">0</p>
+                    </div>
+                    <i class="fas fa-calendar-check text-4xl text-orange-600 opacity-20"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="bg-white rounded-lg shadow mb-6">
+            <div class="flex border-b border-gray-200">
+                <button class="tab-btn active px-6 py-4 font-medium text-sm transition" data-tab="orders">
+                    <i class="fas fa-list mr-2"></i>Dish Orders
+                </button>
+                <button class="tab-btn px-6 py-4 font-medium text-sm transition" data-tab="bookings">
+                    <i class="fas fa-calendar mr-2"></i>Table Bookings
+                </button>
+                <button class="tab-btn px-6 py-4 font-medium text-sm transition" data-tab="records">
+                    <i class="fas fa-archive mr-2"></i>Records
+                </button>
+                <button class="tab-btn px-6 py-4 font-medium text-sm transition" data-tab="dishes">
+                    <i class="fas fa-utensils mr-2"></i>Popular Dishes
+                </button>
+                <button class="tab-btn px-6 py-4 font-medium text-sm transition" data-tab="analytics">
+                    <i class="fas fa-chart-pie mr-2"></i>Analytics
+                </button>
+            </div>
+
+            <!-- Orders Tab -->
+            <div class="tab-content active p-6" id="orders">
+                <div class="mb-4 flex gap-4 items-end">
+                    <input type="text" id="orderSearch" placeholder="Search by phone or table..."
+                        class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    <select id="orderFilter"
+                        class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        <option value="">All Status</option>
+                        <option value="today">Today's Orders</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                    </select>
+                    <button id="exportOrdersXlsxBtn" class="bg-yellow-600 text-white px-3 py-1 rounded-lg hover:bg-yellow-700 transition font-medium text-sm" title="Export orders to Excel">
+                        <i class="fas fa-file-excel mr-1"></i>Export Excel
+                    </button>
+                    <button onclick="clearAllOrders()" class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition font-medium text-sm" title="Clear all orders">
+                        <i class="fas fa-trash mr-1"></i>Clear
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-100 border-b">
+                            <tr>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Order ID</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Phone</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Table</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Items</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Amount</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Date & Time</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTable" class="divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>Loading orders...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bookings Tab -->
+            <div class="tab-content p-6" id="bookings">
+                <div class="mb-4 flex gap-4 items-end">
+                    <input type="text" id="bookingSearch" placeholder="Search by name or table..."
+                        class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    <select id="bookingFilter"
+                        class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        <option value="">All Bookings</option>
+                        <option value="today">Today</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <button id="exportBookingsXlsxBtn" class="bg-yellow-600 text-white px-3 py-1 rounded-lg hover:bg-yellow-700 transition font-medium text-sm" title="Export bookings to Excel">
+                        <i class="fas fa-file-excel mr-1"></i>Export Excel
+                    </button>
+                    <button onclick="clearAllBookings()" class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition font-medium text-sm" title="Clear all table bookings">
+                        <i class="fas fa-trash mr-1"></i>Clear
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-100 border-b">
+                            <tr>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Booking ID</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Name</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Phone</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Guests</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Assigned Table</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Allocated At</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Ordered At</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Status</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTable" class="divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>Loading bookings...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Records Tab -->
+            <div class="tab-content p-6" id="records">
+                <div class="mb-4 flex gap-4 items-end">
+                    <input type="text" id="recordSearch" placeholder="Search by id, phone, table or name..."
+                        class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    <div class="flex gap-2">
+                        <button id="exportCsvBtn" class="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition font-medium text-sm" title="Export CSV">
+                            <i class="fas fa-file-csv mr-1"></i>Export CSV
+                        </button>
+                        <button id="exportJsonBtn" class="bg-gray-700 text-white px-3 py-1 rounded-lg hover:bg-gray-800 transition font-medium text-sm" title="Export JSON">
+                            <i class="fas fa-file-download mr-1"></i>Export JSON
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-100 border-b">
+                            <tr>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Type</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Record ID</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Booking/Order ID</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Name</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Phone</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Table</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Items / Guests</th>
+                                <th class="px-6 py-3 text-left font-semibold text-gray-700">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsTable" class="divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="8" class="px-6 py-8 text-center text-gray-500">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Dishes Tab -->
+            <div class="tab-content p-6" id="dishes">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="dishesContainer">
+                    <div class="text-center py-8 col-span-3">
+                        <i class="fas fa-spinner fa-spin text-2xl text-gray-500 mb-2"></i>
+                        <p class="text-gray-500">Loading dishes data...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div class="tab-content p-6" id="analytics">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Top Ordered Dishes</h3>
+                        <div id="topDishes" class="space-y-3">
+                            <p class="text-gray-500 text-center py-4">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Orders by Hour</h3>
+                        <div id="ordersByHour" class="space-y-3">
+                            <p class="text-gray-500 text-center py-4">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Order Details</h2>
+                <button class="text-gray-500 hover:text-gray-700" onclick="closeOrderModal()">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="modalContent" class="space-y-3">
+                <!-- Content will be filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script>
+        // Data Storage
+        let allOrders = [];
+        let allBookings = [];
+
+        // Date formatter: dd/mm/yyyy, HH:MM:SS (time optional)
+        function formatDateTime(value, includeTime = true) {
+            if (!value && value !== 0) return '-';
+            const d = new Date(value);
+            if (isNaN(d.getTime())) return String(value);
+            const dd = String(d.getDate()).padStart(2, '0');
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const yyyy = d.getFullYear();
+            if (!includeTime) return `${dd}/${mm}/${yyyy}`;
+            const hh = String(d.getHours()).padStart(2, '0');
+            const min = String(d.getMinutes()).padStart(2, '0');
+            const ss = String(d.getSeconds()).padStart(2, '0');
+            return `${dd}/${mm}/${yyyy}, ${hh}:${min}:${ss}`;
+        }
+
+        // Connect to WebSocket for real-time updates
+        const socket = io();
+
+        socket.on('connect', () => {
+            console.log('🔴 Connected to server for real-time updates');
+        });
+
+        // Listen for new orders from any device
+        socket.on('new-order', (order) => {
+            console.log('📱 New order received from device:', order);
+            if (!allOrders.find(o => o.id == order.id)) {
+                allOrders.unshift(order);
+                renderOrders();
+                updateStatistics();
+                showNotification('📦 New order received!', 'success');
+                renderRecords();
+            }
+        });
+
+        // Listen for order updates
+        socket.on('order-updated', (order) => {
+            const index = allOrders.findIndex(o => o.id == order.id);
+            if (index !== -1) {
+                allOrders[index] = order;
+                renderOrders();
+                renderRecords();
+            }
+        });
+
+        // Listen for new bookings
+        socket.on('new-booking', (booking) => {
+            console.log('📱 New booking received:', booking);
+            if (!allBookings.find(b => b.id == booking.id)) {
+                allBookings.unshift(booking);
+                renderBookings();
+                updateStatistics();
+                showNotification('🪑 New table booking!', 'success');
+                renderRecords();
+            }
+        });
+
+        // Listen for table updates (status change / reservation)
+        socket.on('table-updated', (table) => {
+            console.log('🪑 Table updated:', table);
+            try { loadBookings(); } catch (e) {}
+            try { renderAllocatedFromStorage(); } catch (e) {}
+            showNotification('🪑 Table status changed', 'info');
+        });
+
+        // Listen for sync data on connection
+        socket.on('sync-data', (data) => {
+            allOrders = data.orders || [];
+            allBookings = data.bookings || [];
+            updateStatistics();
+            renderOrders();
+            renderBookings();
+            renderRecords();
+        });
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white;
+                border-radius: 8px;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Load data from API (with fallback to localStorage)
+        function loadData() {
+            // Try to fetch from server first
+            Promise.all([
+                fetch('/api/orders').then(r => r.json()).catch(() => []),
+                fetch('/api/bookings').then(r => r.json()).catch(() => [])
+            ]).then(([orders, bookings]) => {
+                // If server returns data, use it
+                if (orders && orders.length > 0) {
+                    allOrders = orders;
+                    // persist server copy locally for offline/manager convenience
+                    try { localStorage.setItem('orders', JSON.stringify(allOrders)); } catch(e) { /* ignore */ }
+                }
+                if (bookings && bookings.length > 0) {
+                    allBookings = bookings;
+                    try { localStorage.setItem('bookings', JSON.stringify(allBookings)); } catch(e) { /* ignore */ }
+                }
+
+                // Fallback to localStorage if server is empty
+                if (!allOrders.length) allOrders = JSON.parse(localStorage.getItem('orders')) || [];
+                if (!allBookings.length) allBookings = JSON.parse(localStorage.getItem('bookings')) || [];
+
+                updateStatistics();
+                renderOrders();
+                renderBookings();
+                renderDishes();
+                renderAnalytics();
+                renderRecords();
+
+                // Update last refresh time
+                const now = new Date();
+                document.getElementById('lastUpdate').textContent = `Last updated: ${now.toLocaleTimeString()}`;
+            });
+        }
+
+        // Record search and export handlers
+        (function setupRecordControls(){
+            const recordSearchEl = document.getElementById('recordSearch');
+            if (recordSearchEl) {
+                recordSearchEl.addEventListener('input', function (e) {
+                    const term = e.target.value.toLowerCase();
+                    const tbody = document.getElementById('recordsTable');
+                    if (!tbody) return;
+
+                    const records = [];
+                    allBookings.forEach(booking => {
+                        const recId = `BKG-${booking.id.toString().slice(-6)}`;
+                        records.push({
+                            type: 'Booking', recordId: recId, rawId: booking.id, name: booking.name || 'N/A', phone: booking.phone || 'N/A', table: booking.table ? `Table ${booking.table}` : '-', items: `Guests: ${booking.guests || '-'}`, date: getBookingTimestamp(booking)
+                        });
+                    });
+                    allOrders.forEach(order => {
+                        const recId = `ORD-${order.id.toString().slice(-6)}`;
+                        records.push({
+                            type: 'Order', recordId: recId, rawId: order.id, name: order.name || order.customerName || '-', phone: order.phoneNumber || order.phone || 'N/A', table: order.tableNumber ? `Table ${order.tableNumber}` : '-', items: order.items ? order.items.map(i => `${i.name} x${i.quantity}`).join(', ') : '-', date: getOrderTimestamp(order)
+                        });
+                    });
+
+                    const filtered = records.filter(r => (
+                        r.recordId.toLowerCase().includes(term) ||
+                        (r.rawId && String(r.rawId).toLowerCase().includes(term)) ||
+                        (r.phone && r.phone.toLowerCase().includes(term)) ||
+                        (r.table && r.table.toLowerCase().includes(term)) ||
+                        (r.name && r.name.toLowerCase().includes(term)) ||
+                        (r.items && r.items.toLowerCase().includes(term))
+                    ));
+
+                    if (filtered.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No matching records found</td></tr>';
+                        return;
+                    }
+
+                    const sorted = filtered.sort((a, b) => b.date - a.date);
+                    tbody.innerHTML = sorted.map(rec => `
+                        <tr>
+                            <td class="px-6 py-3 font-semibold">${rec.type}</td>
+                            <td class="px-6 py-3 font-mono text-blue-600">${rec.recordId}</td>
+                            <td class="px-6 py-3 font-mono text-gray-700">${rec.rawId}</td>
+                            <td class="px-6 py-3">${rec.name}</td>
+                            <td class="px-6 py-3">${rec.phone}</td>
+                            <td class="px-6 py-3">${rec.table}</td>
+                            <td class="px-6 py-3 text-sm text-gray-700">${rec.items}</td>
+                            <td class="px-6 py-3 text-gray-600 text-xs">${formatDateTime(rec.date)}</td>
+                        </tr>
+                    `).join('');
+                });
+            }
+
+            const exportCsvBtn = document.getElementById('exportCsvBtn');
+            const exportJsonBtn = document.getElementById('exportJsonBtn');
+
+            function buildRecordsArray(){
+                const arr = [];
+                allBookings.forEach(b => {
+                    let tableVal = b.table || '-';
+                    try {
+                        const alloc = JSON.parse(localStorage.getItem('admin_allocations') || '{}');
+                        const assigned = Object.keys(alloc).find(k => String(alloc[k]) === String(b.id));
+                        tableVal = assigned ? assigned : (b.table || '-');
+                    } catch (e) { tableVal = b.table || '-'; }
+                    arr.push({ type: 'Booking', id: b.id, recordId: `BKG-${b.id.toString().slice(-6)}`, name: b.name || 'N/A', phone: b.phone || 'N/A', table: tableVal || '-', items: `Guests: ${b.guests || '-'}`, date: new Date(getBookingTimestamp(b)).toISOString() });
+                });
+                allOrders.forEach(o => arr.push({ type: 'Order', id: o.id, recordId: `ORD-${o.id.toString().slice(-6)}`, name: o.name || o.customerName || '-', phone: o.phoneNumber || o.phone || 'N/A', table: o.tableNumber || '-', items: o.items ? o.items.map(i => `${i.name} x${i.quantity}`).join('; ') : '-', date: new Date(getOrderTimestamp(o)).toISOString() }));
+                return arr.sort((a,b) => new Date(b.date) - new Date(a.date));
+            }
+
+            if (exportCsvBtn) exportCsvBtn.addEventListener('click', function(){
+                const data = buildRecordsArray();
+                if (data.length === 0) return alert('No records to export');
+                const headers = ['type','recordId','id','name','phone','table','items','date'];
+                const csv = [headers.join(',')].concat(data.map(r => headers.map(h => `"${(r[h]||'').toString().replace(/"/g,'""')}"`).join(','))).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `records-${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+
+            if (exportJsonBtn) exportJsonBtn.addEventListener('click', function(){
+                const data = buildRecordsArray();
+                if (data.length === 0) return alert('No records to export');
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `records-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        })();
+
+        // Listen for localStorage changes from other pages (e.g., admin dashboard)
+        window.addEventListener('storage', (e) => {
+            if (!e.key) return;
+            try {
+                if (e.key === 'bookings') {
+                    const newBookings = JSON.parse(e.newValue || '[]');
+                    allBookings = newBookings;
+                    renderBookings();
+                    updateStatistics();
+                    // brief notification
+                    showNotification('Bookings updated', 'success');
+                    renderRecords();
+                }
+                if (e.key === 'orders') {
+                    const newOrders = JSON.parse(e.newValue || '[]');
+                    allOrders = newOrders;
+                    renderOrders();
+                    updateStatistics();
+                    renderRecords();
+                }
+                // Admin allocations changed (admin dashboard is source of truth for table assignments)
+                if (e.key === 'admin_allocations' || e.key === 'love_bite_tables') {
+                    // Re-render bookings/records to reflect allocation mapping
+                    renderBookings();
+                    renderRecords();
+                    updateStatistics();
+                    showNotification('Table allocations updated by admin', 'success');
+                }
+            } catch (err) {
+                console.warn('Failed to handle storage event', err);
+            }
+        });
+
+        // Also listen for same-tab custom events dispatched by booking/order pages
+        window.addEventListener('bookings-updated', (evt) => {
+            try {
+                allBookings = JSON.parse(localStorage.getItem('bookings')) || [];
+                renderBookings();
+                updateStatistics();
+                renderRecords();
+                showNotification('🪑 Booking saved (local)', 'success');
+            } catch (e) { console.warn('bookings-updated handler error', e); }
+        });
+
+        window.addEventListener('orders-updated', (evt) => {
+            try {
+                allOrders = JSON.parse(localStorage.getItem('orders')) || [];
+                renderOrders();
+                updateStatistics();
+                renderRecords();
+                showNotification('📦 Order placed (local)', 'success');
+            } catch (e) { console.warn('orders-updated handler error', e); }
+        });
+
+        // Update statistics
+        function updateStatistics() {
+            document.getElementById('totalOrders').textContent = allOrders.length;
+
+            const totalRevenue = allOrders.reduce((sum, order) => sum + order.total, 0);
+            document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toFixed(2)}`;
+
+            document.getElementById('totalBookings').textContent = allBookings.length;
+
+            const today = new Date().toDateString();
+            const todayOrders = allOrders.filter(order => new Date(order.date).toDateString() === today);
+            document.getElementById('todayOrders').textContent = todayOrders.length;
+        }
+
+        // Helper: get order timestamp (fallbacks included)
+        function getOrderTimestamp(order) {
+            return new Date(order.date || order.createdAt || order.created || Date.now()).getTime();
+        }
+
+        // Render orders table (newest first)
+        function renderOrders() {
+            const tbody = document.getElementById('ordersTable');
+
+            if (allOrders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No orders found</td></tr>';
+                return;
+            }
+
+            const sorted = [...allOrders].sort((a, b) => getOrderTimestamp(b) - getOrderTimestamp(a));
+
+            tbody.innerHTML = sorted.map((order, idx) => {
+                const itemsCount = order.items.length;
+                const orderDate = formatDateTime(order.date || order.createdAt || order.created || Date.now());
+                const orderID = `ORD-${order.id.toString().slice(-6)}`;
+
+                return `
+                    <tr>
+                        <td class="px-6 py-3 font-mono text-pink-600">${orderID}</td>
+                        <td class="px-6 py-3">${order.phoneNumber || 'N/A'}</td>
+                        <td class="px-6 py-3">
+                            ${order.tableNumber ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">🪑 ${order.tableNumber}</span>` : '<span class="text-gray-500">-</span>'}
+                        </td>
+                        <td class="px-6 py-3">${itemsCount} items</td>
+                        <td class="px-6 py-3 font-semibold">₹${order.total.toFixed(2)}</td>
+                        <td class="px-6 py-3 text-gray-600 text-xs">${orderDate}</td>
+                        <td class="px-6 py-3 space-x-2 flex">
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm" onclick="viewOrderDetails('${order.id}')" title="View order details">
+                                <i class="fas fa-eye mr-1"></i>View
+                            </button>
+                            <button class="text-red-600 hover:text-red-800 font-medium text-sm" onclick="deleteOrder('${order.id}')" title="Delete this order">
+                                <i class="fas fa-trash mr-1"></i>Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Delete order
+        function deleteOrder(orderId) {
+            const index = allOrders.findIndex(o => o.id == orderId);
+            const order = allOrders[index];
+            if (index === -1 || !order) return;
+
+            if (!confirm(`Delete order #${orderId}? This action cannot be undone.`)) {
+                return;
+            }
+
+            // Remove from array
+            allOrders.splice(index, 1);
+
+            // Save to localStorage
+            localStorage.setItem('orders', JSON.stringify(allOrders));
+
+            // Try to delete on server
+            fetch('/api/orders/' + orderId, {
+                method: 'DELETE'
+            }).catch(() => {});
+
+            // Re-render orders
+            renderOrders();
+            updateStatistics();
+        }
+
+        // Helper: get booking timestamp (fallbacks included).
+        // Prefer actual assignment time when present (tableAssignedAt), otherwise use the requested slot (allocatedAt) or creation time.
+        function getBookingTimestamp(b) {
+            return new Date(b.tableAssignedAt || b.allocatedAt || b.bookedAt || b.createdAt || b.created || b.bookingDate || Date.now()).getTime();
+        }
+
+        // Render bookings table (newest first - by allocation/booked time)
+        function renderBookings() {
+            const tbody = document.getElementById('bookingsTable');
+
+            if (allBookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-gray-500">No bookings found</td></tr>';
+                return;
+            }
+
+            const sorted = [...allBookings].sort((a, b) => getBookingTimestamp(b) - getBookingTimestamp(a));
+
+            tbody.innerHTML = sorted.map((booking, idx) => {
+                const bookingID = `BKG-${booking.id.toString().slice(-6)}`;
+                const status = booking.status || 'Pending';
+                // Ordered at (when customer submitted)
+                const bookedAtRaw = booking.bookedAt || booking.createdAt || booking.created || Date.now();
+                const bookedAt = formatDateTime(bookedAtRaw);
+                // AllocatedAt now represents the customer's requested slot; assignment timestamp stored in tableAssignedAt
+                const allocatedAt = booking.allocatedAt ? formatDateTime(booking.allocatedAt, false) : '-' ;
+                const assignedAt = booking.tableAssignedAt ? formatDateTime(booking.tableAssignedAt) : 'Not assigned';
+
+                // Requested slot (customer's requested booking date & time). Prefer explicit date+time fields, fallback to bookingDate
+                let requestedSlot = '-';
+                if (booking.date && booking.time) {
+                    try { requestedSlot = formatDateTime(`${booking.date}T${booking.time}`); } catch (e) { requestedSlot = `${booking.date} ${booking.time}`; }
+                } else if (booking.bookingDate) {
+                    requestedSlot = formatDateTime(booking.bookingDate);
+                }
+
+                // Prefer admin_allocations mapping for assigned table (admin dashboard is source of truth)
+                let assignedTable = null;
+                try {
+                    const alloc = JSON.parse(localStorage.getItem('admin_allocations') || '{}');
+                    assignedTable = Object.keys(alloc).find(k => String(alloc[k]) === String(booking.id));
+                } catch (e) { assignedTable = null; }
+                // If the allocation was freed, keep historical visibility using lastAssignedTable so manager still sees the table number
+                if (!assignedTable && booking && booking.lastAssignedTable) assignedTable = String(booking.lastAssignedTable);
+
+                return `
+                    <tr>
+                        <td class="px-6 py-3 font-mono text-blue-600">${bookingID}</td>
+                        <td class="px-6 py-3">${booking.name || 'N/A'}</td>
+                        <td class="px-6 py-3">${booking.phone || 'N/A'}</td>
+                        <td class="px-6 py-3">${booking.guests || '-'}</td>
+                        <td class="px-6 py-3">
+                            ${assignedTable ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">🪑 Table ${assignedTable}</span>` : (booking.table ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">🪑 Table ${booking.table}</span>` : '<span class="text-gray-500">Not assigned</span>')}
+                        </td>
+                        <td class="px-6 py-3 text-gray-600 text-xs">
+                            <div>${allocatedAt}</div>
+                        </td>
+                        <td class="px-6 py-3 text-gray-600 text-xs">${bookedAt}</td>
+                        <td class="px-6 py-3">
+                            <span class="status-badge status-${status.toLowerCase()}">${status}</span>
+                        </td>
+                        <td class="px-6 py-3 space-x-2 flex">
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm" onclick="viewBookingDetails('${booking.id}')" title="View booking details">
+                                <i class="fas fa-eye mr-1"></i>View
+                            </button>
+                            <button class="text-red-600 hover:text-red-800 font-medium text-sm" onclick="deleteBooking('${booking.id}')" title="Delete this booking">
+                                <i class="fas fa-trash mr-1"></i>Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render combined records (bookings + orders)
+        function renderRecords() {
+            const tbody = document.getElementById('recordsTable');
+            if (!tbody) return;
+
+            const records = [];
+
+            allBookings.forEach(booking => {
+                const recId = `BKG-${booking.id.toString().slice(-6)}`;
+                const phone = booking.phone || 'N/A';
+                let table = '-';
+                try {
+                    const alloc = JSON.parse(localStorage.getItem('admin_allocations') || '{}');
+                    const assigned = Object.keys(alloc).find(k => String(alloc[k]) === String(booking.id));
+                    table = assigned ? assigned : (booking.table ? booking.table : '-');
+                } catch (e) { table = booking.table ? booking.table : '-'; }
+                const name = booking.name || 'N/A';
+                const items = `Guests: ${booking.guests || '-'}${(booking.date && booking.time) ? ` | ${booking.date} ${booking.time}` : ''}`;
+                records.push({
+                    type: 'Booking',
+                    recordId: recId,
+                    rawId: booking.id,
+                    bookingId: booking.id,
+                    name,
+                    phone,
+                    table,
+                    items,
+                    date: getBookingTimestamp(booking),
+                    raw: booking
+                });
+            });
+
+            allOrders.forEach(order => {
+                const recId = `ORD-${order.id.toString().slice(-6)}`;
+                const phone = order.phoneNumber || order.phone || 'N/A';
+                const table = order.tableNumber ? order.tableNumber : '-';
+                const name = order.name || order.customerName || '-';
+                const items = order.items ? order.items.map(i => `${i.name} x${i.quantity}`).join(', ') : '-';
+                records.push({
+                    type: 'Order',
+                    recordId: recId,
+                    rawId: order.id,
+                    orderId: order.id,
+                    name,
+                    phone,
+                    table,
+                    items,
+                    date: getOrderTimestamp(order),
+                    raw: order
+                });
+            });
+
+            if (records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No records found</td></tr>';
+                return;
+            }
+
+            const sorted = records.sort((a, b) => b.date - a.date);
+
+            tbody.innerHTML = sorted.map(rec => {
+                const dateStr = formatDateTime(rec.date);
+                return `
+                    <tr>
+                        <td class="px-6 py-3 font-semibold">${rec.type}</td>
+                        <td class="px-6 py-3 font-mono text-blue-600">${rec.recordId}</td>
+                        <td class="px-6 py-3 font-mono text-gray-700">${rec.rawId}</td>
+                        <td class="px-6 py-3">${rec.name || '-'}</td>
+                        <td class="px-6 py-3">${rec.phone}</td>
+                        <td class="px-6 py-3">${rec.table !== '-' ? `Table ${rec.table}` : '-'}</td>
+                        <td class="px-6 py-3 text-sm text-gray-700">${rec.items}</td>
+                        <td class="px-6 py-3 text-gray-600 text-xs">${dateStr}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Delete booking
+        function deleteBooking(bookingId) {
+            const index = allBookings.findIndex(b => b.id == bookingId);
+            const booking = allBookings[index];
+            if (index === -1 || !booking) return;
+
+            if (!confirm(`Delete booking for ${booking.name || 'Guest'}? This action cannot be undone.`)) {
+                return;
+            }
+
+            // Remove from array
+            allBookings.splice(index, 1);
+
+            // Save to localStorage
+            localStorage.setItem('bookings', JSON.stringify(allBookings));
+
+            // Try to delete on server
+            fetch('/api/bookings/' + bookingId, {
+                method: 'DELETE'
+            }).catch(() => { });
+
+            // Re-render bookings
+            renderBookings();
+            updateStatistics();
+            renderRecords();
+        }
+
+        function renderDishes() {
+            const container = document.getElementById('dishesContainer');
+            const dishStats = {};
+
+            allOrders.forEach(order => {
+                order.items.forEach(item => {
+                    dishStats[item.name] = (dishStats[item.name] || 0) + item.quantity;
+                });
+            });
+
+            const topDishes = Object.entries(dishStats)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+
+            if (topDishes.length === 0) {
+                container.innerHTML = '<div class="text-center py-8 col-span-3"><p class="text-gray-500">No dish data available</p></div>';
+                return;
+            }
+
+            container.innerHTML = topDishes.map(([name, count]) => `
+                <div class="bg-white rounded-lg shadow p-4 text-center">
+                    <i class="fas fa-utensils text-3xl text-pink-600 mb-2"></i>
+                    <h3 class="font-semibold text-gray-800">${name}</h3>
+                    <p class="text-2xl font-bold text-pink-600 mt-2">${count}</p>
+                    <p class="text-gray-500 text-sm">times ordered</p>
+                </div>
+            `).join('');
+        }
+
+        // Render analytics
+        function renderAnalytics() {
+            // Top dishes
+            const dishStats = {};
+            allOrders.forEach(order => {
+                order.items.forEach(item => {
+                    dishStats[item.name] = (dishStats[item.name] || 0) + item.quantity;
+                });
+            });
+
+            const topDishes = Object.entries(dishStats)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            document.getElementById('topDishes').innerHTML = topDishes.length > 0
+                ? topDishes.map(([name, count]) => `
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">${name}</span>
+                        <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full font-semibold">${count}</span>
+                    </div>
+                `).join('')
+                : '<p class="text-gray-500 text-center py-4">No data available</p>';
+
+            // Orders by hour
+            const hourStats = {};
+            allOrders.forEach(order => {
+                const hour = new Date(order.date).getHours();
+                hourStats[hour] = (hourStats[hour] || 0) + 1;
+            });
+
+            document.getElementById('ordersByHour').innerHTML = Object.entries(hourStats)
+                .sort((a, b) => a[0] - b[0])
+                .map(([hour, count]) => `
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">${hour}:00 - ${hour + 1}:00</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2">
+                                <div class="bg-pink-600 h-2 rounded-full" style="width: ${Math.min(count * 20, 100)}%"></div>
+                            </div>
+                            <span class="font-semibold text-gray-800 min-w-8">${count}</span>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        // View order details
+        function viewOrderDetails(orderId) {
+            const order = allOrders.find(o => o.id == orderId);
+            if (!order) return;
+
+            const itemsList = order.items.map(item =>
+                `<li class="flex justify-between"><span>${item.name} x${item.quantity}</span><span>₹${(item.price * item.quantity).toFixed(2)}</span></li>`
+            ).join('');
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="space-y-2">
+                    <p><strong>Order ID:</strong> ORD-${order.id.toString().slice(-6)}</p>
+                    <p><strong>Phone:</strong> ${order.phoneNumber || 'N/A'}</p>
+                    <p><strong>Table:</strong> ${order.tableNumber || 'Not provided'}</p>
+                    <p><strong>Date:</strong> ${formatDateTime(order.date)}</p>
+                    <hr class="my-2">
+                    <p><strong>Items:</strong></p>
+                    <ul class="ml-4 space-y-1 text-sm">${itemsList}</ul>
+                    <hr class="my-2">
+                    <p><strong>Total:</strong> ₹${order.total.toFixed(2)}</p>
+                </div>
+            `;
+
+            document.getElementById('orderModal').classList.remove('hidden');
+        }
+
+        // View booking details
+        function viewBookingDetails(bookingId) {
+            const booking = allBookings.find(b => b.id == bookingId);
+            if (!booking) return;
+
+            // Calculate ordered (submission) timestamp
+            const bookedAtRaw = booking.bookedAt || booking.createdAt || booking.created || Date.now();
+            const bookedAt = formatDateTime(bookedAtRaw);
+            const allocatedAt = booking.allocatedAt ? formatDateTime(booking.allocatedAt, false) : 'Not allocated';
+            const assignedAt = booking.tableAssignedAt ? formatDateTime(booking.tableAssignedAt) : 'Not assigned';
+
+            // Requested slot (customer's requested booking date & time)
+            let requestedSlot = 'Not specified';
+            if (booking.date && booking.time) {
+                try { requestedSlot = formatDateTime(`${booking.date}T${booking.time}`); } catch (e) { requestedSlot = `${booking.date} ${booking.time}`; }
+            } else if (booking.bookingDate) {
+                requestedSlot = formatDateTime(booking.bookingDate);
+            }
+            document.getElementById('modalContent').innerHTML = `
+                <div class="space-y-2">
+                    <p><strong>Booking ID:</strong> BKG-${booking.id.toString().slice(-6)}</p>
+                    <p><strong>Name:</strong> ${booking.name || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${booking.phone || 'N/A'}</p>
+                    <p><strong>Guests:</strong> ${booking.guests || '-'}</p>
+                    <p><strong>Assigned Table:</strong> ${(() => {
+                            try {
+                                const alloc = JSON.parse(localStorage.getItem('admin_allocations') || '{}');
+                                const assigned = Object.keys(alloc).find(k => String(alloc[k]) === String(booking.id));
+                                const display = assigned ? assigned : (booking.lastAssignedTable ? booking.lastAssignedTable : booking.table);
+                                return display ? `<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold">🪑 Table ${display}</span>` : '<span class="text-gray-500">Not assigned</span>';
+                            } catch (e) { return booking.table ? `<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold">🪑 Table ${booking.table}</span>` : '<span class="text-gray-500">Not assigned</span>'; }
+                        })()}</p>
+                    <p><strong>Requested Slot:</strong> ${requestedSlot}</p>
+                    <p><strong>Assigned At:</strong> ${assignedAt}</p>
+                    <p><strong>Ordered At:</strong> ${bookedAt}</p>
+                    <p><strong>Status:</strong> ${booking.status || 'Pending'}</p>
+                </div>
+            `; 
+
+            document.getElementById('orderModal').classList.remove('hidden');
+        }
+
+        // Close modal
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+        }
+
+        // Refresh data
+        document.getElementById('refreshBtn').addEventListener('click', function () {
+            this.classList.add('fa-spin');
+            setTimeout(() => {
+                loadData();
+                this.classList.remove('fa-spin');
+            }, 500);
+        });
+
+        // Export data
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            const data = {
+                orders: allOrders,
+                bookings: allBookings,
+                exportDate: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `restaurant-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        });
+
+        // Export Orders to Excel (.xlsx)
+        function exportOrdersToExcel() {
+            if (!window.XLSX) return alert('Excel export library failed to load.');
+            if (!allOrders.length) return alert('No orders to export');
+
+            const data = allOrders.map(o => ({
+                OrderID: `ORD-${String(o.id).slice(-6)}`,
+                Phone: o.phoneNumber || o.phone || 'N/A',
+                Table: o.tableNumber || '-',
+                Items: o.items ? o.items.map(i => `${i.name} x${i.quantity}`).join('; ') : '-',
+                Total: o.total != null ? o.total : '',
+                Date: formatDateTime(getOrderTimestamp(o))
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Orders');
+            XLSX.writeFile(wb, `orders-${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        // Export Bookings to Excel (.xlsx)
+        function exportBookingsToExcel() {
+            if (!window.XLSX) return alert('Excel export library failed to load.');
+            if (!allBookings.length) return alert('No bookings to export');
+
+            const data = allBookings.map(b => {
+                let tableVal = b.table || '-';
+                try {
+                    const alloc = JSON.parse(localStorage.getItem('admin_allocations') || '{}');
+                    const assigned = Object.keys(alloc).find(k => String(alloc[k]) === String(b.id));
+                    tableVal = assigned ? assigned : (b.lastAssignedTable ? String(b.lastAssignedTable) : (b.table || '-'));
+                } catch (e) { tableVal = b.lastAssignedTable ? String(b.lastAssignedTable) : (b.table || '-'); }
+                return {
+                    BookingID: `BKG-${String(b.id).slice(-6)}`,
+                    Name: b.name || 'N/A',
+                    Phone: b.phone || 'N/A',
+                    Guests: b.guests || '',
+                    Table: tableVal,
+                    RequestedSlot: (b.date && b.time) ? `${b.date} ${b.time}` : (b.bookingDate || '-'),
+                    AssignedAt: b.tableAssignedAt ? formatDateTime(b.tableAssignedAt) : '-',
+                    Status: b.status || 'Pending',
+                    OrderedAt: formatDateTime(getBookingTimestamp(b))
+                };
+            });
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Bookings');
+            XLSX.writeFile(wb, `bookings-${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        // Wire up export buttons (if present)
+        const exportOrdersXlsxBtn = document.getElementById('exportOrdersXlsxBtn');
+        if (exportOrdersXlsxBtn) exportOrdersXlsxBtn.addEventListener('click', exportOrdersToExcel);
+
+        const exportBookingsXlsxBtn = document.getElementById('exportBookingsXlsxBtn');
+        if (exportBookingsXlsxBtn) exportBookingsXlsxBtn.addEventListener('click', exportBookingsToExcel);
+
+        // Search functionality
+        document.getElementById('orderSearch').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allOrders.filter(order =>
+                (order.phoneNumber && order.phoneNumber.includes(searchTerm)) ||
+                (order.tableNumber && order.tableNumber.toString().toLowerCase().includes(searchTerm))
+            );
+
+            const tbody = document.getElementById('ordersTable');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No matching orders found</td></tr>';
+                return;
+            }
+
+            // Always show newest first in search results
+            const sorted = filtered.sort((a, b) => getOrderTimestamp(b) - getOrderTimestamp(a));
+
+            tbody.innerHTML = sorted.map(order => {
+                const itemsCount = order.items.length;
+                const orderDate = formatDateTime(order.date || order.createdAt || order.created || Date.now());
+                const orderID = `ORD-${order.id.toString().slice(-6)}`;
+
+                return `
+                    <tr>
+                        <td class="px-6 py-3 font-mono text-pink-600">${orderID}</td>
+                        <td class="px-6 py-3">${order.phoneNumber || 'N/A'}</td>
+                        <td class="px-6 py-3">
+                            ${order.tableNumber ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">🪑 ${order.tableNumber}</span>` : '<span class="text-gray-500">-</span>'}
+                        </td>
+                        <td class="px-6 py-3">${itemsCount} items</td>
+                        <td class="px-6 py-3 font-semibold">₹${order.total.toFixed(2)}</td>
+                        <td class="px-6 py-3 text-gray-600 text-xs">${orderDate}</td>
+                        <td class="px-6 py-3">
+                            <button class="text-blue-600 hover:text-blue-800 font-medium text-sm" onclick="viewOrderDetails('${order.id}')">
+                                <i class="fas fa-eye mr-1"></i>View
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            localStorage.removeItem('managerSession');
+            window.location.href = 'admin-login.html';
+        });
+
+        // Modal close on background click
+        document.getElementById('orderModal').addEventListener('click', function (e) {
+            if (e.target === this) closeOrderModal();
+        });
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', loadData);
+
+        // set manager avatar initial from name and keep in sync
+        (function initManagerAvatar() {
+            const nameEl = document.getElementById('managerName');
+            const avatar = document.getElementById('managerAvatar');
+            if (!nameEl || !avatar) return;
+            const setInitial = () => {
+                const text = nameEl.textContent.trim();
+                avatar.textContent = text ? text.trim()[0].toUpperCase() : 'M';
+            };
+            setInitial();
+            const obs = new MutationObserver(setInitial);
+            obs.observe(nameEl, { childList: true, characterData: true, subtree: true });
+        })();
+
+        // Clear all orders
+        function clearAllOrders() {
+            if (!confirm('Are you sure you want to clear all orders? This action cannot be undone.')) {
+                return;
+            }
+            
+            allOrders = [];
+            localStorage.setItem('orders', JSON.stringify(allOrders));
+            
+            // Try to clear on server
+            fetch('/api/orders/clear', {
+                method: 'DELETE'
+            }).catch(() => {});
+            
+            renderOrders();
+            updateStatistics();
+            showNotification('All orders have been cleared.', 'success');
+        }
+
+        // Clear all bookings
+        function clearAllBookings() {
+            if (!confirm('Are you sure you want to clear all table bookings? This action cannot be undone.')) {
+                return;
+            }
+            
+            allBookings = [];
+            localStorage.setItem('bookings', JSON.stringify(allBookings));
+            
+            // Try to clear on server
+            fetch('/api/bookings/clear', {
+                method: 'DELETE'
+            }).catch(() => {});
+            
+            renderBookings();
+            updateStatistics();
+            showNotification('All table bookings have been cleared.', 'success');
+        }
+
+        // Auto-refresh data every 10 seconds
+        setInterval(loadData, 10000);
+    </script>
+</body>
+
+</html>

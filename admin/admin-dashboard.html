@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Love Bite Restaurant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-btn.active {
+            @apply bg-pink-600 text-white;
+        }
+
+        .tab-btn {
+            @apply bg-gray-200 text-gray-700;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gray-100">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <h1
+                    class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-orange-600">
+                    <i class="fas fa-tachometer-alt mr-2"></i>Admin Dashboard
+                </h1>
+            </div>
+            <div class="flex items-center space-x-4">
+
+                <a href="manager-dashboard.html" class="btn-primary inline-flex items-center gap-2" title="Open Manager Dashboard">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Manager Dashboard</span>
+                </a>
+                <span id="adminEmail" class="text-gray-700 font-medium"></span>
+
+                <button id="logoutBtn" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto p-6">
+        <!-- Add Item Section -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-plus-circle mr-2 text-pink-600"></i>Add
+                New Menu Item</h2>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <input type="text" id="itemName" placeholder="Item name"
+                    class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <input type="number" id="itemPrice" placeholder="Price" step="0.01"
+                    class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <select id="itemCategory"
+                    class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    <option value="">Select Category</option>
+                    <option value="Starters">Starters</option>
+                    <option value="Main Courses">Main Courses</option>
+                    <option value="Drinks">Drinks</option>
+                    <option value="Desserts">Desserts</option>
+                </select>
+                <input type="text" id="itemDesc" placeholder="Description"
+                    class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <button id="addItemBtn"
+                    class="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700 transition font-medium">
+                    <i class="fas fa-plus mr-2"></i>Add Item
+                </button>
+            </div>
+        </div>
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 border-t-4 border-pink-600">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Total Bookings</p>
+                        <p id="totalBookings" class="text-3xl font-bold text-gray-800">0</p>
+                    </div>
+                    <i class="fas fa-calendar text-pink-600 text-3xl opacity-20"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-t-4 border-orange-600">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Total Orders</p>
+                        <p id="totalOrders" class="text-3xl font-bold text-gray-800">0</p>
+                    </div>
+                    <i class="fas fa-shopping-cart text-orange-600 text-3xl opacity-20"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-t-4 border-green-600">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Total Revenue</p>
+                        <p id="totalRevenue" class="text-3xl font-bold text-gray-800">₹0</p>
+                    </div>
+                    <i class="fas fa-rupee-sign text-green-600 text-3xl opacity-20"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 border-t-4 border-blue-600">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Total Guests</p>
+                        <p id="totalGuests" class="text-3xl font-bold text-gray-800">0</p>
+                    </div>
+                    <i class="fas fa-users text-blue-600 text-3xl opacity-20"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="flex border-b border-gray-200">
+                <button class="tab-btn active px-6 py-4 font-medium focus:outline-none transition" data-tab="bookings">
+                    <i class="fas fa-calendar mr-2"></i>Bookings
+                </button>
+                <button class="tab-btn px-6 py-4 font-medium focus:outline-none transition" data-tab="allocated">
+                    <i class="fas fa-th-large mr-2"></i>Allocated Tables
+                </button>
+                <button class="tab-btn px-6 py-4 font-medium focus:outline-none transition" data-tab="orders">
+                    <i class="fas fa-shopping-cart mr-2"></i>Orders
+                </button>
+
+                <button class="tab-btn px-6 py-4 font-medium focus:outline-none transition" data-tab="menu">
+                    <i class="fas fa-utensils mr-2"></i>Menu
+                </button>
+                <button class="tab-btn px-6 py-4 font-medium focus:outline-none transition" data-tab="ratings">
+                    <i class="fas fa-star mr-2"></i>Ratings
+                </button>
+            </div>
+
+            <!-- Bookings Tab -->
+            <div id="bookings" class="tab-content active p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Bookings</h2>
+
+                <!-- Table Availability Status -->
+                <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <h3 class="font-bold text-blue-900 mb-3"><i class="fas fa-door-open mr-2"></i>Table Availability
+                    </h3>
+                    <div id="tableStatus" class="grid grid-cols-2 md:grid-cols-6 gap-3"></div>
+                </div>
+
+                <div id="bookingsList" class="space-y-4">
+                    <p class="text-gray-500">Loading bookings...</p>
+                </div>
+            </div>
+
+            <!-- Allocated Tables Tab -->
+            <div id="allocated" class="tab-content p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Allocated Tables</h2>
+                <div class="flex items-center justify-between mb-3 gap-4">
+                    <div id="allocatedControls" class="flex items-center gap-3">
+                        <div id="allocatedTopNotice" class="p-3 bg-red-100 text-red-700 rounded hidden">All table are booked — try again later</div>
+                        <input id="allocatedSearch" type="search" placeholder="Search table / name / phone / id" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" />
+                        <select id="allocatedSort" class="px-3 py-2 border rounded-lg">
+                            <option value="table">Sort: Table #</option>
+                            <option value="name">Sort: Name (A–Z)</option>
+                        </select>
+                        <button id="exportAllocatedBtn" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition text-sm" title="Export allocations">
+                            <i class="fas fa-file-export mr-2"></i>Export
+                        </button>
+                        <button id="bulkFreeBtn" class="bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-800 transition text-sm" title="Free selected allocations" disabled>
+                            <i class="fas fa-trash mr-2"></i>Free Selected
+                        </button>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center gap-2 text-sm text-gray-600"><input id="selectAllAllocated" type="checkbox"> Select All</label>
+                        <button id="clearAllocatedBtn" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition text-sm ml-3" title="Clear all allocations">
+                            <i class="fas fa-trash-alt mr-2"></i>Clear All Allocations
+                        </button>
+                    </div>
+                </div>
+                <div id="allocatedList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <p class="text-gray-500">Loading allocated tables...</p>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders" class="tab-content p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Orders</h2>
+                <div id="ordersList" class="space-y-4">
+                    <p class="text-gray-500">Loading orders...</p>
+                </div>
+            </div>
+
+            <!-- Menu Tab -->
+            <div id="menu" class="tab-content p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Menu Management</h2>
+                <div id="menuList" class="space-y-4">
+                    <p class="text-gray-500">Loading menu items...</p>
+                </div>
+            </div>
+
+            <!-- Ratings Tab -->
+            <div id="ratings" class="tab-content p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Dish Ratings</h2>
+                <div id="ratingsList" class="space-y-4">
+                    <p class="text-gray-500">Loading dishes...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div id="ratingModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+            <h3 class="text-xl font-bold text-gray-800 mb-4" id="ratingModalTitle">Edit Rating</h3>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2">Dish Rating (0-5)</label>
+                <div class="flex items-center gap-2">
+                    <input type="range" id="ratingSlider" min="0" max="5" step="0.5" value="4" 
+                        class="flex-1 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer">
+                    <span id="ratingValue" class="text-lg font-bold text-pink-600 w-12">4.0</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button id="saveRatingBtn" class="flex-1 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition font-medium">
+                    <i class="fas fa-save mr-2"></i>Save
+                </button>
+                <button id="closeRatingModalBtn" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition font-medium">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin-dashboard.js"></script>
+</body>
+
+</html>

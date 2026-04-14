@@ -1,0 +1,712 @@
+:root {
+        --primary: linear-gradient(135deg, #ff6b6b, #ff8e8e, #ff6b6b);
+        --secondary: linear-gradient(135deg, #4ecdc4, #44a08d, #4ecdc4);
+        --dark: #1a1a2e;
+        --light: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        --accent: linear-gradient(135deg, #ffd93d, #ffcc00);
+        --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --border-radius: 12px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        background: var(--light);
+        color: var(--dark);
+        line-height: 1.6;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Dark mode (toggle by adding .dark to <html> or <body>) */
+    .dark body, .dark {
+        background: #000000 !important;
+        color: #ffffff !important;
+    }
+
+    /* Minimal star-rating styles (kept as the review feature) */
+    .star-rating {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .star-rating .stars {
+        color: #ffd54a; /* bright yellow */
+        font-size: 1.2rem;
+        line-height: 1;
+        text-shadow: 0 0 8px rgba(255, 213, 74, 0.9), 0 0 16px rgba(255, 200, 50, 0.6);
+        filter: drop-shadow(0 2px 6px rgba(255, 200, 50, 0.4));
+    }
+
+    .star-rating .score {
+        color: #6b7280; /* gray-500 */
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+        color: #ffffff;
+    }
+
+    .dark p, .dark span, .dark a, .dark label {
+        color: #ffffff;
+    }
+
+    .dark .menu-card {
+        background: #000000;
+        box-shadow: 0 6px 18px rgba(2,6,23,0.7);
+        border-color: rgba(255,255,255,0.03);
+        color: #ffffff;
+    }
+
+    .dark .menu-card h3, .dark .menu-card p {
+        color: #ffffff;
+    }
+
+    .dark input, .dark textarea, .dark select {
+        background: #000000;
+        color: #ffffff;
+        border: 1px solid #333333 !important;
+        box-shadow: none;
+    }
+
+    .dark input::placeholder, .dark textarea::placeholder {
+        color: #666666;
+    }
+
+    .dark button {
+        color: #ffffff;
+    }
+
+    .dark footer {
+      background: #000;
+      color: #ffffff;
+    }
+
+        /* Override common Tailwind text color utilities inside dark mode so they remain readable */
+        .dark .text-gray-800 { color: #ffffff !important; }
+        .dark .text-gray-700 { color: #ffffff !important; }
+        .dark .text-gray-600 { color: #cccccc !important; }
+        .dark .text-gray-500 { color: #999999 !important; }
+        .dark .text-gray-400 { color: #666666 !important; }
+        .dark .text-gray-300 { color: #cccccc !important; }
+
+        /* About section cards: keep readable in dark mode */
+        .dark #aboutSection .bg-white {
+            background: #000000 !important;
+            color: #ffffff !important;
+            box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+            border: 1px solid #333333 !important;
+        }
+
+        .dark #aboutSection h3 {
+            color: #ffffff !important;
+        }
+
+        .dark #aboutSection p {
+            color: #ffffff !important;
+        }
+
+        .dark #aboutSection .fa-clock, .dark #aboutSection .fa-phone {
+            opacity: 0.95;
+        }
+
+    /* Dark mode: cart sidebar styling for better contrast */
+    .dark #cartSidebar {
+        background: #000000;
+        color: #ffffff;
+        border-left: 1px solid #333333;
+    }
+
+    .dark #cartSidebar .text-gray-800,
+    .dark #cartSidebar h2,
+    .dark #cartSidebar .font-bold {
+        color: #ffffff;
+    }
+
+    .dark #cartSidebar .text-gray-700,
+    .dark #cartSidebar label,
+    .dark #cartSidebar span,
+    .dark #cartSidebar p {
+        color: #ffffff;
+    }
+
+    .dark #cartSidebar .cart-item {
+        background: #111111;
+        color: #ffffff;
+        box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+        border-left-color: transparent;
+    }
+
+    .dark #cartSidebar .cart-item:hover {
+        background: linear-gradient(135deg, rgba(255,107,107,0.03), rgba(255,255,255,0.02));
+        transform: translateX(0);
+        border-left-color: rgba(255,107,107,0.12);
+    }
+
+    .dark #cartSidebar #emptyCartMessage {
+        color: #999999;
+    }
+
+    .dark #cartSidebar input, .dark #cartSidebar textarea {
+        background: #000000;
+        color: #ffffff;
+        border-color: #333333 !important;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(255, 217, 61, 0.03) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .menu-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-light);
+        transition: var(--transition);
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+    }
+
+    .menu-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .menu-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: var(--shadow-hover);
+        border-color: rgba(255, 107, 107, 0.2);
+    }
+
+    .menu-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .menu-card img {
+        transition: transform 0.4s ease;
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .menu-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .cart-item {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: var(--shadow-light);
+        transition: var(--transition);
+        border-left: 4px solid transparent;
+    }
+
+    .cart-item:hover {
+        background: linear-gradient(135deg, #fff7ed, #fef3c7);
+        box-shadow: var(--shadow-medium);
+        border-left-color: #ff6b6b;
+        transform: translateX(4px);
+    }
+
+    #paymentModal {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-hover);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: var(--transition), transform 0.3s ease;
+        transform: scale(0.95);
+    }
+
+    #paymentModal:not(.hidden) {
+        transform: scale(1);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nav-item {
+        position: relative;
+        padding: 12px 24px;
+        background: white;
+        border-radius: var(--border-radius);
+        border: 2px solid transparent;
+        transition: var(--transition);
+        font-weight: 500;
+        box-shadow: var(--shadow-light);
+        margin: 0 4px;
+    }
+
+    .nav-item::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: var(--primary);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+
+    .nav-item:hover::after {
+        width: 80%;
+    }
+
+    .active-nav::after {
+        width: 80%;
+        background: var(--accent);
+    }
+
+    .nav-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+        border-color: rgba(255, 107, 107, 0.2);
+        color: #ff6b6b;
+    }
+
+    .active-nav {
+        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+        color: white;
+        box-shadow: var(--shadow-medium);
+        transform: translateY(-2px);
+    }
+
+    /* Animation for notifications */
+    @keyframes slideIn {
+        from { 
+            transform: translateY(30px) scale(0.95); 
+            opacity: 0; 
+        }
+        to { 
+            transform: translateY(0) scale(1); 
+            opacity: 1; 
+        }
+    }
+
+    .notification {
+        animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-light);
+        border-left: 5px solid #ff6b6b;
+        padding: 16px;
+        margin-bottom: 12px;
+        transition: var(--transition);
+    }
+
+    .notification:hover {
+        box-shadow: var(--shadow-hover);
+        transform: translateX(8px);
+    }
+
+    /* Additional Modern Enhancements */
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: var(--border-radius);
+        font-weight: 500;
+        transition: var(--transition);
+        box-shadow: var(--shadow-light);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    /* Search Input Enhancement */
+    input[type="text"], input[type="tel"], input[type="search"] {
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: var(--border-radius);
+        padding: 12px 16px;
+        transition: var(--transition);
+        background: white;
+        box-shadow: var(--shadow-light);
+    }
+
+    input[type="text"]:focus, input[type="tel"]:focus, input[type="search"]:focus {
+        outline: none;
+        border-color: #ff6b6b;
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1), var(--shadow-medium);
+        transform: scale(1.02);
+    }
+
+    /* Grid and Layout Enhancements */
+    .grid {
+        display: grid;
+        gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .menu-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .nav-item {
+            padding: 10px 16px;
+            margin: 0 2px;
+        }
+
+        body::before {
+            background: none; /* Reduce complexity on mobile */
+        }
+    }
+    /* === FOOTER STYLING === */
+footer {
+  background-color: #111;           /* dark background */
+  color: #f2f2f2;                   /* light text for contrast */
+  text-align: center;               /* center all text */
+  padding: 20px 10px;               /* vertical + horizontal padding */
+  font-family: "Poppins", sans-serif;
+  border-top: 2px solid #e63946;    /* subtle accent border (change color to match your theme) */
+}
+
+/* Paragraph (© line) */
+footer p {
+  margin: 8px 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+/* Footer navigation links */
+footer nav {
+  margin-top: 6px;
+}
+
+footer nav a {
+  color: #f2f2f2;                   /* default text color */
+  text-decoration: none;            /* remove underline */
+  margin: 0 8px;                    /* spacing between links */
+  font-size: 0.9rem;
+  transition: color 0.3s ease;      /* smooth hover effect */
+}
+
+/* Hover effect */
+footer nav a:hover {
+  color: #e63946;                   /* red accent on hover (match your theme) */
+}
+
+/* Responsive: adjust padding on small screens */
+@media (max-width: 600px) {
+  footer {
+    font-size: 0.85rem;
+    padding: 15px 5px;
+  }
+
+  footer nav a {
+    display: inline-block;
+    margin: 5px;
+  }
+}
+footer {
+  background: linear-gradient(180deg, #1a1a1a, #000);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.4);
+}
+
+  form {
+    max-width: 400px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-family: Arial;
+  }
+  label { display:block; margin-top:15px; font-weight:bold; }
+  input, textarea {
+    width:100%; padding:10px; margin-top:5px;
+    border:1px solid #ccc; border-radius:6px;
+  }
+  button {
+    margin-top:20px; width:100%; padding:10px;
+    background:#0a0041; color:white; border:none;
+    border-radius:6px; cursor:pointer;
+  }
+  button:hover { background:#0a0041; }
+
+/* ============================================
+   DARK MODE FIXES FOR NAVIGATION & CATEGORIES
+   ============================================ */
+
+/* Dark mode: Navigation items */
+.dark .nav-item {
+    background: #0f1724;
+    color: #e8f0f8;
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dark .nav-item:hover {
+    background: #1a2d4a;
+    color: #ff6b6b;
+    border-color: rgba(255, 107, 107, 0.4);
+    box-shadow: 0 6px 12px rgba(255, 107, 107, 0.2);
+}
+
+.dark .active-nav {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+    color: #ffffff;
+    box-shadow: 0 6px 12px rgba(255, 107, 107, 0.3);
+}
+
+/* Dark mode: Category buttons (Tailwind) */
+.dark .category-btn {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #333333 !important;
+    transition: var(--transition);
+}
+
+.dark .category-btn:hover {
+    background: #1a1a1a !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 107, 107, 0.5) !important;
+    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.2) !important;
+}
+
+/* Dark mode: Active category button (pink/orange gradient) */
+.dark .bg-pink-600 {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3) !important;
+}
+
+.dark .bg-gray-200 {
+    background: #000000 !important;
+    color: #ffffff !important;
+}
+
+/* Dark mode: Search input visibility */
+.dark #searchInput {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border-color: #333333 !important;
+}
+
+.dark #searchInput::placeholder {
+    color: #666666 !important;
+}
+
+.dark #searchInput:focus {
+    outline: none !important;
+    border-color: #ff6b6b !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2) !important;
+}
+
+/* Dark mode: Section headings visibility */
+.dark #menuSection h2,
+.dark #orderHistorySection h2,
+.dark #aboutSection h2 {
+    color: #ffffff !important;
+}
+
+/* Dark mode: Empty message text */
+.dark .text-gray-500 {
+    color: #999999 !important;
+}
+
+/* Dark mode: Filter buttons area */
+.dark .flex.space-x-4 {
+    background: transparent;
+}
+
+/* Additional dark mode contrast improvements */
+.dark .border-gray-200 {
+    border-color: #333333 !important;
+}
+
+.dark .hover\:bg-gray-100:hover {
+    background: #111111 !important;
+}
+
+/* Payment Modal Dark Mode Styling */
+.dark #paymentModal {
+    background: rgba(0, 0, 0, 0.9) !important;
+}
+
+.dark #paymentModal .bg-white {
+    background: #000000 !important;
+    color: #ffffff !important;
+}
+
+.dark #paymentModal h2 {
+    color: #ffffff !important;
+}
+
+.dark #paymentModal label, .dark #paymentModal p {
+    color: #ffffff !important;
+}
+
+.dark #paymentModal input {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border-color: #333333 !important;
+}
+
+.dark #paymentModal input::placeholder {
+    color: #666666 !important;
+}
+
+.dark #paymentModal .bg-pink-100 {
+    background: rgba(236, 72, 153, 0.15) !important;
+}
+
+.dark #paymentModal #paymentTotal {
+    color: #f472b6 !important;
+}
+
+.dark #paymentModal a {
+    color: #f472b6 !important;
+}
+
+/* QR Code Container Styling - ensure it fits in the box */
+#qrCode {
+    overflow: hidden;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#qrCode canvas {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Admin Dashboard Dark Mode */
+.dark .bg-white {
+    background: #0f1724 !important;
+}
+
+.dark .bg-gray-200 {
+    background: #1a2e42 !important;
+}
+
+.dark input[type="text"],
+.dark input[type="number"],
+.dark input[type="tel"],
+.dark select,
+.dark textarea {
+    background: #0b1220 !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #7a99b8 !important;
+}
+
+/* Vertical scrollbar for payment section */
+#orderHistoryItems,
+#menuList,
+#bookingsList,
+#ordersList {
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ff6b6b;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ff8e8e;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #ff6b6b;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #ff8e8e;
+}
+
+/* General fallback to ensure readable text in dark mode across the site */
+.dark body, .dark header, .dark main, .dark section, .dark nav, .dark footer,
+.dark div, .dark p, .dark a, .dark span, .dark label, .dark li, .dark button,
+.dark input, .dark textarea, .dark select {
+    color: #ffffff !important;
+}
+
+/* Convert commonly used light backgrounds to dark variants in dark mode */
+.dark .bg-white, .dark .bg-gray-50, .dark .bg-gray-100, .dark .menu-card {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border-color: #333333 !important;
+}
+
+/* Ensure elements that explicitly used dark text colors become readable */
+.dark .text-black, .dark .text-gray-900 {
+    color: #ffffff !important;
+}
+
+/* Mobile responsive cart sidebar */
+@media (max-width: 640px) {
+  #cartSidebar {
+    width: 85vw !important;
+    max-width: 320px;
+  }
+}
