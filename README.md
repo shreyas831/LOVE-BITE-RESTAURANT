@@ -212,7 +212,8 @@ Stores table information:
 For bugs or suggestions, contact the development team.
 
 ---
-
+BY SHREYAS KULKARNI
 **Last Updated**: April 14, 2026  
 **Version**: 1.0.0  
 **Status**: Production Ready ✅
+
